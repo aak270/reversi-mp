@@ -1,0 +1,63 @@
+body{
+	margin: 8px 0 0 0;
+}
+div.site{
+	margin: auto;
+}
+div.header, div.footer{
+	background-color: #08afdc;
+	height: 35px;
+	text-align: center;
+}
+div.header{
+	margin-bottom: 30px;
+}
+.home{
+	height: 100%;
+}
+div.content{
+	text-align: center;
+	max-width: 1000px;
+	margin: auto;
+}
+img.logo{
+	max-width: 100%;
+	display: block;
+	margin: auto;
+}
+button.btn{
+	width: 40%;
+	height: 30px;
+	display: block;
+	margin: auto;
+	margin-bottom: 6px;
+	border: none;
+	background-color: #08afdc;
+	color: white;
+	cursor: pointer;
+	font-size: 100%;
+}
+button.btn:hover{
+	background-color: #00c9ff;
+}
+div.footer{
+	margin-top: 40px;
+}
+
+table{
+	margin: auto;
+}
+.score{
+	display: inline;
+	padding: 40px;
+}
+td img{
+	vertical-align: middle;
+}
+
+ol{
+	text-align: left;
+}
+li{
+	margin-bottom: 10px;
+}

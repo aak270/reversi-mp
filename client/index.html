@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Reversi / Othello</title>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
+    </head>
+    <body>
+        <div class="login" id='login'>
+            <input id="username"></input>
+            <button id="login" onclick="login();">Login</button>
+        </div>
+
+        <div class="lobby" id='lobby' style="display: none;">
+            <h1>WELCOME</h1>
+            <h2 id='user'></h2>
+        
+            <h3>Online players</h3>
+            <div id='userList'>
+                No users online
+            </div>
+        </div>
+
+        <div class="game" id='game' style="display: none;">
+            <button id='resign' onclick="resign();">Resign</button>
+            <div id='gameBoard'>
+            </div>
+        </div>
+        
+        <script type="text/javascript" src="/client/js/reversi.js"></script>
+        <script type="text/javascript" src="/client/js/default.js"></script>
+    </body>
+</html>
