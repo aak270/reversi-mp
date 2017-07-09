@@ -1,5 +1,3 @@
-//package communication
-socket = io();
 
 //board size
 var width = 8;
@@ -24,50 +22,90 @@ score["white"] = 0;				//white piece score
 var picture = new Array();
 picture["white"] = "/client/img/white.png";
 picture["black"] = "/client/img/black.png";
-picture["white_trans"] = "/client/img/white_trans.png";
-picture["black_trans"] = "/client/img/black_trans.png";
-picture["green"] = "/client/img/blank.png";
+picture["hint"] = "/client/img/hint.png";
+picture["trans"] = "/client/img/trans.png";
 
 //settings
 var player = "black";
+var playerName = "me";
+var opponent = "white";
+var opponentName = "you";
 var turn = "black";
 
-var gameStart = function(div, playerColor){
+var gameStart = function(username, playerColor, oppName, oppColor){
+	playerName = username;
 	player = playerColor;
-
-	var element = document.getElementById(div);
-	element.innerHTML = '';
-
-	showInfo(element, player);
-	loadBoard(element);
-	scoreInfo(element);
+	opponentName = oppName;
+	opponent = oppColor;
+	
+	showInfo(playerName, playerColor, opponentName, oppColor);
+	initializeBoard(player);
 };
 
-var createInfo = function(element, content1, id, content2){
-	var h2 = document.createElement('h2');
-	var text = document.createTextNode(content1);
-	h2.appendChild(text);
+var createInfo = function(username, nameId, playerColor, spanId, scoreId){
+	if(playerName == username){
+		var name = username + ' (-You-)';
+	}else{
+		var name = username;
+	}
+	var text = document.createTextNode(name);
+	document.getElementById(nameId).innerHTML = '';
+	document.getElementById(nameId).appendChild(text);
+	
+	var img = document.createElement('img');
+	img.src = picture[playerColor];
 	
 	var span = document.createElement('span');
-	span.id = id;
-	text = document.createTextNode(content2);
+	span.id = spanId;
+	text = document.createTextNode('2');
 	span.appendChild(text);
 
-	h2.appendChild(span);
-	element.appendChild(h2);
-}
+	document.getElementById(scoreId).innerHTML = '';
+	document.getElementById(scoreId).appendChild(img);
+	document.getElementById(scoreId).appendChild(span);
+	
+};
 
-//show information whose turn
-var showInfo = function(element, playerColor){
-	createInfo(element, 'Turn: ', 'turn', turn);
-	createInfo(element, 'Player: ', 'player', playerColor);
-}
+var initializeBoard = function(playerColor){
+	var id = "[3,3]";
+	document.getElementById(id).src = picture["white"];
+	board[3][3] = "white";
+	id = "[4,4]";
+	document.getElementById(id).src = picture["white"];
+	board[4][4] = "white";
+	id = "[3,4]";
+	document.getElementById(id).src = picture["black"];
+	board[3][4] = "black";
+	id = "[4,3]";
+	document.getElementById(id).src = picture["black"];
+	board[4][3] = "black";
 
-//show score for both black and white
-var scoreInfo = function(element){
-	createInfo(element, 'Black: ', 'bscore', '2');
-	createInfo(element, 'White: ', 'wscore', '2');
-}
+	//save the black and white piece location
+	blackPieces = [[3,4],[4,3]];
+	whitePieces = [[3,3],[4,4]];
+	
+	//set the score
+	score['black'] = 2;
+	score['white'] = 2;
+		
+	//show the possible moves
+	if(playerColor == "black"){
+		showMoves();
+	}
+	
+	return 0;
+};
+
+var showInfo = function(username, playerColor, oppName, oppColor){
+	createInfo(username, 'user-name', playerColor, 'user-score-text', 'user-score');
+	createInfo(oppName, 'opp-name', oppColor, 'opp-score-text', 'opp-score');
+	
+	if(playerColor == turn){
+		document.getElementById("user-score-box").style.border = '2px solid red';
+	}else{
+		document.getElementById("opp-score-box").style.border = '2px solid red';
+	}
+};
 
 //load the board
 var loadBoard = function(element){
@@ -86,29 +124,14 @@ var loadBoard = function(element){
 		var tr = document.createElement('tr');
 		//cols
 		for(x = 0; x < width; x++){
-			if((x == 3 && y == 3) || (x == 4 && y == 4)) color = "white";
-			else if((x == 3 && y == 4) || (x == 4 && y == 3)) color = "black";
-			else color = "green";
-			
 			var td = document.createElement('td');
-			td.innerHTML = '<img src="' + picture[color] + '" id="[' + x + ',' + y + ']" onclick="putPiece(' + x + ', ' + y + ')" />';
+			td.innerHTML = '<img src="' + picture["trans"] + '" id="[' + x + ',' + y + ']" onclick="putPiece(' + x + ', ' + y + ')" />';
 			tr.appendChild(td);
-			board[x][y] = color;
+			board[x][y] = "trans";
 		}
 		table.appendChild(tr);
 	}
 	element.appendChild(table);
-	
-	//save the black and white piece location
-	blackPieces = [[3,4],[4,3]];
-	whitePieces = [[3,3],[4,4]];
-	
-	//set the score
-	score['black'] = 2;
-	score['white'] = 2;
-		
-	//show the possible moves
-	showMoves();
 	
 	return 0;
 }
@@ -123,12 +146,7 @@ function showMoves(){
 	var x;
 	var y;
 	
-	//if player black show black transparant else otherwise
-	if(player == "black"){
-		poscol = picture["black_trans"];
-	}else{
-		poscol = picture["white_trans"];
-	}
+	poscol = picture["hint"];
 	
 	//look through the array
 	for(i = 0; i < moves.length; i++){
@@ -172,8 +190,8 @@ function possibleMoves(playerColor = player){
 		//if the right piece is opposite color, look through to the right
 		if(x + 2 < width && board[x + 1][y] == flipColor){
 			for(x_pos = x + 2; x_pos < width; x_pos++){
-				//if the color is green put it in the possible moves array
-				if(board[x_pos][y] == "green"){
+				//if the color is trans put it in the possible moves array
+				if(board[x_pos][y] == "trans"){
 					moves[i] = [x_pos, y];
 					i++;
 					break;
@@ -188,8 +206,8 @@ function possibleMoves(playerColor = player){
 		//down
 		if(y + 2 < height && board[x][y + 1] == flipColor){
 			for(y_pos = y + 2; y_pos < height; y_pos++){
-				//if the color is green put it in the possible moves array
-				if(board[x][y_pos] == "green"){
+				//if the color is trans put it in the possible moves array
+				if(board[x][y_pos] == "trans"){
 					moves[i] = [x, y_pos];
 					i++;
 					break;
@@ -203,8 +221,8 @@ function possibleMoves(playerColor = player){
 		//left
 		if(x - 2 >= 0 && board[x - 1][y] == flipColor){
 			for(x_pos = x - 2; x_pos >= 0; x_pos--){
-				//if the color is green put it in the possible moves array
-				if(board[x_pos][y] == "green"){
+				//if the color is trans put it in the possible moves array
+				if(board[x_pos][y] == "trans"){
 					moves[i] = [x_pos, y];
 					i++;
 					break;
@@ -218,8 +236,8 @@ function possibleMoves(playerColor = player){
 		//up
 		if(y - 2 >= 0 && board[x][y - 1] == flipColor){
 			for(y_pos = y - 2; y_pos >= 0; y_pos--){
-				//if the color is green put it in the possible moves array
-				if(board[x][y_pos] == "green"){
+				//if the color is trans put it in the possible moves array
+				if(board[x][y_pos] == "trans"){
 					moves[i] = [x, y_pos];
 					i++;
 					break;
@@ -233,8 +251,8 @@ function possibleMoves(playerColor = player){
 		//for upright
 		if(x + 2 < width && y - 2 >= 0 && board[x + 1][y - 1] == flipColor){
 			for(x_pos = x + 2, y_pos = y - 2; x_pos < width && y_pos >= 0; x_pos++, y_pos--){
-				//if the color is green put it in the possible moves array
-				if(board[x_pos][y_pos] == "green"){
+				//if the color is trans put it in the possible moves array
+				if(board[x_pos][y_pos] == "trans"){
 					moves[i] = [x_pos, y_pos];
 					i++;
 					break;
@@ -248,8 +266,8 @@ function possibleMoves(playerColor = player){
 		//for downright
 		if(x + 2 < width && y + 2 < height && board[x + 1][y + 1] == flipColor){
 			for(x_pos = x + 2, y_pos = y + 2; x_pos < width && y_pos < height; x_pos++, y_pos++){
-				//if the color is green put it in the possible moves array
-				if(board[x_pos][y_pos] == "green"){
+				//if the color is trans put it in the possible moves array
+				if(board[x_pos][y_pos] == "trans"){
 					moves[i] = [x_pos, y_pos];
 					i++;
 					break;
@@ -263,8 +281,8 @@ function possibleMoves(playerColor = player){
 		//for upleft
 		if(x - 2 >= 0 && y - 2 >= 0 && board[x - 1][y - 1] == flipColor){
 			for(x_pos = x - 2, y_pos = y - 2; x_pos >= 0 && y_pos >= 0; x_pos--, y_pos--){
-				//if the color is green put it in the possible moves array
-				if(board[x_pos][y_pos] == "green"){
+				//if the color is trans put it in the possible moves array
+				if(board[x_pos][y_pos] == "trans"){
 					moves[i] = [x_pos, y_pos];
 					i++;
 					break;
@@ -278,8 +296,8 @@ function possibleMoves(playerColor = player){
 		//for downleft
 		if(x - 2 >= 0 && y + 2 >= 0 && board[x - 1][y + 1] == flipColor){
 			for(x_pos = x - 2, y_pos = y + 2; x_pos >= 0 && y_pos < height; x_pos--, y_pos++){
-				//if the color is green put it in the possible moves array
-				if(board[x_pos][y_pos] == "green"){
+				//if the color is trans put it in the possible moves array
+				if(board[x_pos][y_pos] == "trans"){
 					moves[i] = [x_pos, y_pos];
 					i++;
 					break;
@@ -577,8 +595,8 @@ function removeMoves(x, y){
 		}
 		
 		id = "[" + x_pos + "," + y_pos + "]";
-		document.getElementById(id).src = picture["green"];
-		board[x_pos][y_pos] = "green";
+		document.getElementById(id).src = picture["trans"];
+		board[x_pos][y_pos] = "trans";
 	}
 	
 	//clear the array
@@ -596,12 +614,11 @@ function endTurn(finish){
 	}
 	
 	//renew the turn
-	document.getElementById("turn").textContent = turn;
-	document.getElementById("player").textContent = player;
+	checkTurn();
 	
 	//renew the score
-	document.getElementById("bscore").textContent = score["black"];
-	document.getElementById("wscore").textContent = score["white"];
+	document.getElementById("user-score-text").textContent = score[player];
+	document.getElementById("opp-score-text").textContent = score[opponent];
 	
 	//if board is full game over
 	if(score["black"] + score["white"] == 64){
@@ -626,34 +643,52 @@ function endTurn(finish){
 	return 0;
 }
 
+var checkTurn = function(){
+	if(turn == player){
+		document.getElementById("user-score-box").style.border = '2px solid red';
+		document.getElementById("opp-score-box").style.border = '1px solid black';
+	}else{
+		document.getElementById("user-score-box").style.border = '1px solid black';
+		document.getElementById("opp-score-box").style.border = '2px solid red';
+	}
+};
+
 //game is over
 function gameOver(){
 	if(score["black"] > score["white"]){
 		if(player == "black")
-			alert("YOU WIN!!!");
+			alert(score["black"] + '-' + score['white'] + ", YOU WIN!!!");
 		else
-			alert("YOU LOSE!!!")
-		player = 0;
+			alert(score["white"] + '-' + score['black'] + ", YOU LOSE!!!")
 	}else if(score["black"] == score["white"]){
 		alert("it's a draw");
-		player = 0;
 	}else{
 		if(player == "white")
-			alert("YOU WIN!!!");
+			alert(score["white"] + '-' + score['black'] + ", YOU WIN!!!");
 		else
-			alert("YOU LOSE!!!")
-		player = 0;
+			alert(score["black"] + '-' + score['white'] + ", YOU LOSE!!!");
 	}
 	return 0;
 }
 
 var clearGame = function(){
-	board = [];
+	for(y = 0; y < height; y++){
+		for(x = 0; x < width; x++){
+			id = "[" + x + "," + y + "]";
+			document.getElementById(id).src = picture['trans'];
+			board[x][y] = "trans";
+		}
+	}
+	document.getElementById("opp-score-box").style.border = '1px solid black';
+	document.getElementById("user-score-box").style.border = '1px solid black';
 	blackPieces = [];
 	whitePieces = [];
 	moves = [];
 	score["black"] = 0;
 	score["white"] = 0;
 	player = "black";
+	playerName = "me";
+	opponent = "white";
+	opponentName = "you";
 	turn = "black";
 };

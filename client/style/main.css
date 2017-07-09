@@ -1,63 +1,220 @@
 body{
-	margin: 8px 0 0 0;
+	overflow-y: auto;
+	display: -webkit-flex; /* Safari */
+    -webkit-flex-flow: column; /* Safari 6.1+ */
+    display: flex;
+    flex-flow: column;
+	align-content: center;
+	align-items: center;
+	font-family: "Segoe UI", "Segoe WP", sans-serif, "Segoe MDL2 Assets", "Symbols";
+	background: url(/client/img/body_bg.png) left top repeat #f0f0f0;
 }
-div.site{
-	margin: auto;
+
+body div{
+	-webkit-flex: 1;  /* Safari 6.1+ */
+    -ms-flex: 1;  /* IE 10 */    
+    flex: 1;
 }
-div.header, div.footer{
-	background-color: #08afdc;
-	height: 35px;
+
+div.panel{
+	margin-top: 20px;
 	text-align: center;
+	background-color: #FFF;
+	border-radius: 10px;
+	padding: 5px 15px;
+	border: 1px solid #e5e5e5;
+}
+
+
+input.in, button.btn{
+	padding: 6px 12px;
+	font-size: 14px;
+	border-radius: 4px;
+}
+
+input.in{
+	margin: 0;
+	margin-right: 5px;
+	border: 1px solid #ccc;
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+}
+input.in:focus{
+	outline: 0px;
+	border-color: #66afe9;
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6);
+}
+
+button.btn{
+	font-weight: 700;
+	color: #fff;
+	cursor: pointer;
+	border: 1px solid transparent;
+}
+button.btn-play{
+	background-color: #5bc0de;
+	border-color: #46b8da;
+}
+button.btn-play:hover{
+	background-color: #31b0d5;
+    border-color: #269abc;
+}
+button.btn-help{
+	background-color: #5cb85c;
+    border-color: #4cae4c;
+}
+button.btn-help:hover{
+	background-color: #449d44;
+    border-color: #398439;
+}
+button.btn-exit{
+	background-color: #ff7900;
+    border-color: #ff7900;
+}
+button.btn-exit:hover{
+	background-color: #954700;
+    border-color: #954700;
+}
+
+.text-head{
+	margin: 0;
+	padding: 14px 12px;
+	background: #f0f0f0;
+	font-size: 24px;
+    font-weight: 300;
+    line-height: 1.167;
+}
+
+hr.separator{
+    margin-bottom: 15px;
+	border: 0;
+    border-top: 1px solid #eee;
+}
+
+span.copyright{
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	color: #777;
+	font-size: 14px;
+}
+
+div.login{
+	
 }
 div.header{
+	margin-top: 30px;
+	margin-bottom: 50px;
+}
+div.login img.logo{
+	max-width: 100%;
+}
+div.form-group{
+	margin-bottom: 15px;
+	min-width: 270px;
+}
+
+div.lobby{
+	display:none;
+}
+h1.panel-title{
+	font-size: 46px;
+	font-weight: 200;
+	line-height: 1.216;
+}
+div.lobby h3{
+	border: 1px solid #ccc;
+	border-bottom: transparent;
+}
+div.ol{
+	display: inline-block;
 	margin-bottom: 30px;
 }
-.home{
-	height: 100%;
-}
-div.content{
-	text-align: center;
-	max-width: 1000px;
-	margin: auto;
-}
-img.logo{
-	max-width: 100%;
-	display: block;
-	margin: auto;
-}
-button.btn{
-	width: 40%;
-	height: 30px;
-	display: block;
-	margin: auto;
-	margin-bottom: 6px;
-	border: none;
-	background-color: #08afdc;
-	color: white;
+div.list button{
+	padding: 9px 12px;
+	border: 1px solid #ccc;
+	border-top: transparent;
 	cursor: pointer;
-	font-size: 100%;
+	background: #f9f9f9;
+	width: 100%;
+	margin: 0;
+	font-size: 16px;
 }
-button.btn:hover{
-	background-color: #00c9ff;
-}
-div.footer{
-	margin-top: 40px;
+div.list button:hover{
+	border: 1px solid #7d7d7d;
 }
 
-table{
-	margin: auto;
+div.game{
+	text-align: center;
+	display:none;
 }
-.score{
-	display: inline;
-	padding: 40px;
+div.game td{
+	background-image: url("/client/img/block.png");
+	background-repeat: no-repeat;
 }
-td img{
+div.game td img{
 	vertical-align: middle;
 }
-
-ol{
-	text-align: left;
+div.top{
+	display: block;
 }
-li{
-	margin-bottom: 10px;
+div.gameBoard{
+	display: inline-block;
+	padding: 5px;
+	border-radius: 0;
+	vertical-align: top;
+}
+div.gameInfo{
+	display: inline-block;
+	vertical-align: middle;
+	margin-top: 5px;
+	padding: 10px;
+	border-radius: 0;
+}
+div.helper{
+	display: block;
+}
+div.score-box{
+	display: inline-block;
+	border: 1px solid #ccc;
+	min-width: 127px;
+}
+div.name{
+	border-bottom: 1px solid #ccc;
+}
+div.score{
+	text-align: left;
+	background: #f9f9f9;
+	margin: 0;
+	font-size: 24px;
+}
+div.score img{
+	vertical-align:middle;
+}
+div.score span{
+	margin: 10px;
+}
+
+@media only screen and (min-width: 808px) {
+	div.game{
+		text-align: left;
+	}
+	div.helper{
+		display: inline-block;
+	}
+	div.gameInfo{
+		margin-top: 20px;
+	}
+}
+
+@media only screen and (min-width: 376px) {
+	div.gameBoard{
+		padding: 15px;
+	}
+	div.gameInfo{
+		padding: 10px 0;
+		border-radius: 0;
+		width: 384px;
+		background: #fff;
+	}
+	div.gameInfo hr.separator{
+		width: 340px;
+	}
 }

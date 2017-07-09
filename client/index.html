@@ -1,33 +1,130 @@
 <!DOCTYPE html>
 <html>
     <head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
         <title>Reversi / Othello</title>
-
+		<link rel="stylesheet" type="text/css" href="/client/style/main.css" />
+		<link rel="stylesheet" type="text/css" href="/client/style/popup.css" />
+		<link rel="stylesheet" type="text/css" href="/client/style/chatbox.css" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
     </head>
     <body>
-        <div class="login" id='login'>
-            <input id="username"></input>
-            <button id="login" onclick="login();">Login</button>
+        <div class="login panel" id='login'>
+			<div class="header">
+				<img src="/client/img/logo.png" width="400px" class="logo">
+			</div>
+			<div class="form-group">
+				<input class="in" id="username" placeholder="Alex" maxlength="15" autofocus>
+				<button class="btn btn-play" id="login" onclick="login();">Multiplayer</button>
+			</div>
+			<hr class="separator">
+			<div class="form-group">
+				<button class="btn btn-help" onclick="popup(1);">How To Play</button>
+			</div>
+			<span class="copyright">&copy; 2017, Anggoro Gagah Rahardiyawan. Some Rights Reserved</span>
         </div>
 
-        <div class="lobby" id='lobby' style="display: none;">
-            <h1>WELCOME</h1>
-            <h2 id='user'></h2>
+		<!-- The Modal -->
+		<div id="modal" class="modal">
+			
+			<!-- Modal Content -->
+			<div class="modal-content panel animate">
+				<span onclick="popup(0);" class="close" title="Close">&times;</span>
+
+				<h1 class="panel-title">How to Play</h1>
+				<ol>
+					<li><p>
+					Reversi is played on an 8×8 board similar to that of chess. The two players each have 32 pieces, 
+					which are white on one side and black on the other. The game begins with each player having two pieces placed
+					diagonally in the center of the board.
+					</p></li>
+					<li><p>
+					Black begins by placing a piece, black-side up, adjacent to a white piece and opposite another black piece, 
+					so that a line of one or more white pieces directly intervenes (horizontally, vertically or diagonally) between
+					the two black pieces. You can open with any legal move.
+					</p></li>
+					<li><p>
+					When black places a piece so that an adjacent white piece is between two blacks, the white piece is 
+					flipped over to black. Note that pieces may be flipped and change hands many times during a game.
+					</p></li>
+					<li><p>
+					You may capture one or more pieces on a given turn. 
+					Also, you may capture any number of your opponent’s pieces in one or more rows diagonally, 
+					vertically and horizontally. Again, these pieces may change hands many times during a game.
+					</p></li>
+					<li><p>
+					Black can capture two separate rows of white pieces in one move. 
+					If you cannot make a legal move, you automatically surrender your turn to your opponent. 
+					The winner is the player with the most pieces of his or her color on the board at the end of the game.
+					</p></li>
+				</ol>
+			</div>
+		</div>
+		
+        <div class="lobby panel" id='lobby'>
+			<div class="header">
+				<h1 class="panel-title">Enjoy the Game</h1>
+			</div>
         
-            <h3>Online players</h3>
-            <div id='userList'>
-                No users online
-            </div>
+			<div class="ol">
+				<h3 class="text-head">Online Players</h3>
+				<div class="list" id='userList'>
+				</div>
+			</div>
+			
+			<hr class="separator">
+			<span class="copyright">&copy; 2017, Anggoro Gagah Rahardiyawan. Some Rights Reserved</span>
         </div>
 
-        <div class="game" id='game' style="display: none;">
-            <button id='resign' onclick="resign();">Resign</button>
-            <div id='gameBoard'>
-            </div>
+        <div class="game" id='game'>
+			<div class="top">
+				<button class='btn btn-exit' id='resign' onclick="resign();">Resign</button>
+			</div>
+			
+			<div class="panel gameBoard" id='gameBoard'>
+			
+			</div>
+			
+			<div class="helper">
+				<div class="panel gameInfo">
+					<div class="score-box" id="user-score-box">
+						<div class="name text-head" id="user-name">
+							
+						</div>
+						<div class="score" id="user-score">
+					
+						</div>
+					</div>
+					<div class="score-box" id="opp-score-box">
+						<div class="name text-head" id="opp-name">
+							
+						</div>
+						<div class="score" id="opp-score">
+					
+						</div>
+					</div>
+					
+					<hr class="separator">
+					<span class="copyright">&copy; 2017, Anggoro Gagah Rahardiyawan. Some Rights Reserved</span>
+				</div>
+				
+				<div class="chatbox">
+					<div class="chatlog" id="chatlog">
+						
+					</div>
+
+					<div class="chat-form">
+						<textarea class="in" id="message" placeholder="Send a Message"></textarea>
+						<button class="btn" onclick="send();">Send</button>
+					</div>
+				</div>
+			</div>
+			
         </div>
         
-        <script type="text/javascript" src="/client/js/reversi.js"></script>
+		<script type="text/javascript" src="/client/js/reversi.js"></script>
         <script type="text/javascript" src="/client/js/default.js"></script>
+		<script type="text/javascript" src="/client/js/functions.js"></script>
     </body>
 </html>

@@ -11,8 +11,9 @@ app.get('/', function(req, res){
 });
 app.use('/client', express.static(__dirname + '/client'));
 
-serv.listen(2000); 
-console.log("Server started on port: 2000")
+serv.listen(2000, '0.0.0.0', function() {
+    console.log('Listening to port:  ' + 2000);
+});
 
 /**
  * package communication(socket.io)
@@ -22,6 +23,7 @@ console.log("Server started on port: 2000")
 var lobbyUsers = {};
 var users = {};
 var activeGames = {};
+var id = 0;
 
 var io = require('socket.io')(serv, {});
 io.sockets.on('connection', function(socket){
@@ -31,19 +33,18 @@ io.sockets.on('connection', function(socket){
         socket.userId = username;
         //if username is abailable
         if (!users[username]) {    
-            console.log('creating new user');
+            console.log('creating new user: ' + socket.userId);
             users[username] = {userId: socket.userId, games:{}};
+			
+			socket.emit('login', Object.keys(lobbyUsers));
+			lobbyUsers[username] = socket;
+        
+			socket.broadcast.emit('joinlobby', socket.userId);
         } else {
             console.log('user found!');
-            Object.keys(users[username].games).forEach(function(gameId) {
-                console.log('gameid - ' + gameId);
-            });
+			
+			socket.emit('duplicate');
         }
-        
-        socket.emit('login', Object.keys(lobbyUsers));
-        lobbyUsers[username] = socket;
-        
-        socket.broadcast.emit('joinlobby', socket.userId);
     });
 
     socket.on('invite', function(opponentId) {
@@ -54,24 +55,26 @@ io.sockets.on('connection', function(socket){
       
        
         var game = {
-            id: Math.floor((Math.random() * 100) + 1),
+            id: id++,
             board: null, 
             users: {white: socket.userId, black: opponentId}
         };
         
-        socket.gameId = game.id;
         activeGames[game.id] = game;
         
         users[game.users.white].games[game.id] = game.id;
         users[game.users.black].games[game.id] = game.id;
   
-        console.log('starting game: ' + game.id);
-        lobbyUsers[game.users.white].emit('joingame', {game: game, color: 'white'});
-        lobbyUsers[game.users.black].emit('joingame', {game: game, color: 'black'});
+        lobbyUsers[game.users.white].emit('joingame', {game: game, color: 'white', oppName: opponentId, oppColor: 'black'});
+        lobbyUsers[game.users.black].emit('joingame', {game: game, color: 'black', oppName: socket.userId, oppColor: 'white'});
         
         delete lobbyUsers[game.users.white];
         delete lobbyUsers[game.users.black];   
     });
+	
+	socket.on('entergame', function(data){
+		socket.gameId = data;
+	});
 
     socket.on('putPiece', function(data){
         socket.broadcast.emit('putColor', data);
@@ -86,20 +89,26 @@ io.sockets.on('connection', function(socket){
 
         socket.broadcast.emit('resign', data);
     });
+	
+	socket.on('relogin', function(gameId){
+		delete users[gameId];
+	});
 
-    socket.on('disconnect', function(data) {
-        console.log(data);
-      
-        if (socket && socket.userId && socket.gameId) {
-            console.log(socket.userId + ' disconnected');
-            console.log(socket.gameId + ' disconnected');
-        }
-      
-        delete lobbyUsers[socket.userId];
-      
-        socket.broadcast.emit('logout', {
+    socket.on('disconnect', function() {
+		socket.broadcast.emit('logout', {
             userId: socket.userId,
             gameId: socket.gameId
         });
+		
+        if (socket && socket.userId) {
+            console.log('[' + socket.gameId + '] ' + socket.userId + ' disconnected');
+        }
+      
+        delete lobbyUsers[socket.userId];
+		delete users[socket.userId];
     });
+	
+	socket.on('send', function(data){
+		socket.broadcast.emit('sendMessage', data);
+	});
 });
