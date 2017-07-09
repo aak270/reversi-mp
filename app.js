@@ -11,10 +11,8 @@ app.get('/', function(req, res){
 });
 app.use('/client', express.static(__dirname + '/client'));
 
-serv.listen(2000, '0.0.0.0', function() {
-    console.log('Listening to port:  ' + 2000);
-});
-
+serv.listen(process.env.PORT || 2000);
+console.log("Server started");
 /**
  * package communication(socket.io)
  *  client sends data to server

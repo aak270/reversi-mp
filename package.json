@@ -4,12 +4,15 @@
   "description": "reversi game (othello)",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js"
   },
   "author": "Anggoro",
   "license": "ISC",
   "dependencies": {
     "express": "^4.15.3",
     "socket.io": "^2.0.1"
+  },
+  "engines": {
+	"node": "6.10.x"
   }
 }
