@@ -52,6 +52,7 @@ socket.on('joingame', function(data) {
 	oppColor = data.oppColor;
     gameStart(username, playerColor, oppName, oppColor);
 
+	showTip(1);
     hide('lobby');
     show('game');
 });

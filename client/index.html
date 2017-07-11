@@ -111,7 +111,7 @@
 				
 				<div class="chatbox">
 					<div class="chatlog" id="chatlog">
-						
+			
 					</div>
 
 					<div class="chat-form">
@@ -120,8 +120,19 @@
 					</div>
 				</div>
 			</div>
-			
         </div>
+		
+		<div id="tips" class="modal">
+			<!-- Modal Content -->
+			<div class="modal-content panel animate">
+				<span onclick="showTip(0);" class="close" title="Close">&times;</span>
+
+				<h1 class="panel-title">Alert!</h1>
+				<p>Chat-box will be disabled in smaller screen width.</p>
+				<p><strong>Tip:</strong> For phone user, rotate your phone to landscape mode to enable chat-box.</p>
+				<p><strong>Tip:</strong> For pc/laptop user, in case your chat is not replied, think positive that your opponent's chat-box is disabled.</p>
+			</div>
+		</div>
         
 		<script type="text/javascript" src="/client/js/reversi.js"></script>
         <script type="text/javascript" src="/client/js/default.js"></script>

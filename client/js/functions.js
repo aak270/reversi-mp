@@ -8,7 +8,7 @@ var popup = function(show){
 	}
 	
 	document.getElementById('modal').style.display = dis;
-}
+};
 
 // Get the modal
 var modal = document.getElementById('modal');
@@ -30,4 +30,24 @@ document.getElementById('message').onkeyup = function(event){
 	if (event.keyCode == 13) {
 		send();
 	}
+};
+
+var showTip = function(show){
+	var dis;
+	
+	if(show){
+		dis = 'block';
+	}else{
+		dis = 'none';
+	}
+	
+	document.getElementById('tips').style.display = dis;
+};
+
+var tip = document.getElementById('tips');
+
+window.onclick = function(event) {
+    if (event.target == tip) {
+        tip.style.display = "none";
+    }
 };
